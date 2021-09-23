@@ -7,32 +7,38 @@ const expectCollaterals = async (insurance, expectedBuffer, expectedPublic) => {
     expect(actualPublic).to.equal(expectedPublic)
 }
 
-/**
- * Adds the specified buffer and public amounts to their respective
- * insurance pools
- */
 const setCollaterals = async (
-    tracer,
+    mockTracer,
     quoteToken,
     insurance,
     bufferAmount,
     publicAmount
 ) => {
-    await tracer.setAccountQuote(insurance.address, bufferAmount)
+    await setBufferCollateral(mockTracer, quoteToken, insurance, bufferAmount)
+    await setPublicCollateral(quoteToken, insurance, publicAmount)
+}
+
+const setBufferCollateral = async (
+    mockTracer,
+    quoteToken,
+    insurance,
+    bufferAmount
+) => {
+    await quoteToken.approve(mockTracer.address, bufferAmount)
+
+    await mockTracer.depositToAccount(insurance.address, bufferAmount)
 
     await insurance.updatePoolAmount()
+}
 
+const setPublicCollateral = async (quoteToken, insurance, publicAmount) => {
     await quoteToken.approve(insurance.address, publicAmount)
 
     await insurance.deposit(publicAmount)
 }
 
-/**
- * Adds the specified buffer and public amounts to their respective
- * insurance pools, then drains the pool with the specified amount
- */
 const setAndDrainCollaterals = async (
-    tracer,
+    mockTracer,
     quoteToken,
     insurance,
     bufferAmount,
@@ -40,7 +46,7 @@ const setAndDrainCollaterals = async (
     amountToDrain
 ) => {
     await setCollaterals(
-        tracer,
+        mockTracer,
         quoteToken,
         insurance,
         bufferAmount,

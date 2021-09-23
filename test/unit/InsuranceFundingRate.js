@@ -13,28 +13,20 @@ const setupTests = deployments.createFixture(async () => {
     await deployments.fixture(["MockTracerDeploy"])
     tracer = await getMockTracer()
 
-    // set liquidation contract to accounts[0]
-    accounts = await ethers.getSigners()
-    tracer.setLiquidationContract(accounts[0].address)
-
-    // connect to insurance as liquidation contract
-    let insurance = await getInsurance(tracer)
-    insurance = await insurance.connect(accounts[0])
-
     return {
-        quoteToken: await getQuoteToken(tracer),
         tracer: tracer,
-        insurance: insurance,
+        quoteToken: await getQuoteToken(tracer),
+        insurance: await getInsurance(tracer),
     }
 })
 
 describe("Unit tests: Insurance.sol", function () {
-    let quoteToken
     let tracer
+    let quoteToken
     let insurance
 
     beforeEach(async function () {
-        ;({ quoteToken, tracer, insurance } = await setupTests())
+        ;({ tracer, quoteToken, insurance } = await setupTests())
     })
 
     describe("getPoolFundingRate", async () => {

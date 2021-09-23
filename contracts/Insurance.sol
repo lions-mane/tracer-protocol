@@ -133,7 +133,7 @@ contract Insurance is IInsurance {
     }
 
     /**
-     * @notice Deposits some of the insurance pool's amount into the liquidation contract
+     * @notice Deposits some of the insurance pool's amount into the tracer contract
      * @dev If amount is greater than the insurance pool's balance, deposit total balance.
      *      This was done because in such an emergency situation, we want to recover as much as possible
      * @param amount The desired amount to take from the insurance pool

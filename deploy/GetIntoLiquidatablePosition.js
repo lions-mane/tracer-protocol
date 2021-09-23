@@ -1,4 +1,4 @@
-const perpsAbi = require("../abi/contracts/TracerPerpetualSwaps.sol/TracerPerpetualSwaps.json")
+const perpsAbi = require("../abi/contracts/test/TracerPerpetualSwapsMock.sol/TracerPerpetualSwapsMock.json")
 
 module.exports = async function (hre) {
     const { deployments, getNamedAccounts, ethers, BigNumber } = hre
@@ -85,4 +85,4 @@ module.exports = async function (hre) {
 }
 
 module.exports.tags = ["GetIntoLiquidatablePosition"]
-module.exports.dependencies = ["FullDeployTest"]
+module.exports.dependencies = ["MockTracerDeploy"]

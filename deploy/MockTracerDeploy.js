@@ -1,5 +1,10 @@
-const tracerAbi = require("../abi/contracts/TracerPerpetualSwaps.sol/TracerPerpetualSwaps.json")
+const mockPerpsAbi = require("../abi/contracts/test/TracerPerpetualSwapsMock.sol/TracerPerpetualSwapsMock.json")
 
+/**
+ * Create a deployment with a Mock Tracer contract for insurance tests.
+ * The quote token is deployed with 18 decimals.
+ * This is so no conversion to token values is required when calling ERC20 functions in tests.
+ */
 module.exports = async function (hre) {
     const { deployments, getNamedAccounts, ethers } = hre
     const { deploy, execute } = deployments
@@ -105,9 +110,9 @@ module.exports = async function (hre) {
         contract: "GasOracle",
     })
 
-    // deploy token with an initial supply of 100000 and 8 decimals
+    // deploy token with an initial supply of 100000 and 18 decimals
     const token = await deploy("QuoteToken", {
-        args: [ethers.utils.parseEther("10000000"), "Test Token", "TST", 8], //10 mil supply
+        args: [ethers.utils.parseEther("10000000"), "Test Token", "TST", 18], //10 mil supply
         from: deployer,
         log: true,
         contract: "TestToken",
@@ -244,13 +249,12 @@ module.exports = async function (hre) {
         maxLiquidationSlippage
     )
 
+    // whitelist the trader
     const tracerInstance = new ethers.Contract(
         await deployments.read("TracerPerpetualsFactory", "tracersByIndex", 0),
-        tracerAbi
+        mockPerpsAbi
     ).connect(signers[0])
 
-    // Set Trader.sol to be whitelisted, as well as deployer (for testing purposes)
     await tracerInstance.setWhitelist(trader.address, true)
-    await tracerInstance.setWhitelist(deployer, true)
 }
 module.exports.tags = ["MockTracerDeploy"]
