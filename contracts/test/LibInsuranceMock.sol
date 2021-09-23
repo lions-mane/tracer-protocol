@@ -19,4 +19,34 @@ library LibInsuranceMock {
     ) external pure returns (uint256) {
         return LibInsurance.calcWithdrawAmount(poolTokenSupply, poolTokenUnderlying, wadAmount);
     }
+
+    function calculateImmediateWithdrawalFee(
+        uint256 target,
+        uint256 poolTokenUnderlying,
+        uint256 pendingWithdrawals,
+        uint256 collateralWithdrawalAmount
+    ) external pure returns (uint256) {
+        return
+            LibInsurance.calculateImmediateWithdrawalFee(
+                target,
+                poolTokenUnderlying,
+                pendingWithdrawals,
+                collateralWithdrawalAmount
+            );
+    }
+
+    function calculateDelayedWithdrawalFee(
+        uint256 target,
+        uint256 poolTokenUnderlying,
+        uint256 pendingWithdrawals,
+        uint256 collateralWithdrawalAmount
+    ) external pure returns (uint256) {
+        return
+            LibInsurance.calculateDelayedWithdrawalFee(
+                target,
+                poolTokenUnderlying,
+                pendingWithdrawals,
+                collateralWithdrawalAmount
+            );
+    }
 }
